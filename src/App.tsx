@@ -1,13 +1,26 @@
 import React, {useState, useEffect} from 'react';
-import './App.css';
+import styles from "./App.module.css"
 import { db } from "./firebase"
 import { FormControl, TextField,List } from "@material-ui/core";
 import AddToPhotoSIcon from "@material-ui/icons/AddToPhotos"
 import TaskItem from './TaskItem';
+import { makeStyles } from "@material-ui/styles"
+
+const useStyles = makeStyles({
+  field: {
+    marginTop: 30,
+    marginBottom: 20,
+  },
+  list: {
+    margin: "auto",
+    width: "40%",
+  }
+})
 
 const App: React.FC = () => {
   const [tasks, setTasks] = useState([{id: "" ,title: "" }]);
   const [input, setInput] = useState("");
+  const classes = useStyles();
   useEffect(() => {
     const unSub = db.collection("tasks").onSnapshot((snapshot) => {
       setTasks(
@@ -23,10 +36,12 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="App">
+    <div className={styles.app__root}>
       <h1>ToDo App React Firebase</h1>
+      <br/>
       <FormControl>
         <TextField 
+          className={classes.field}
           InputLabelProps={{
             shrink: true,
           }}
@@ -36,10 +51,10 @@ const App: React.FC = () => {
           setInput(e.target.value)}
         />
       </FormControl>
-      <button disabled={!input} onClick={newTask}>
+      <button disabled={!input} onClick={newTask} className={styles.app__icon}>
         <AddToPhotoSIcon/>
       </button>
-      <List>
+      <List className={classes.list}>
         {tasks.map((task) => (<TaskItem key={task.id} id={task.id} title={task.title}/>))}
       </List>
     </div>
